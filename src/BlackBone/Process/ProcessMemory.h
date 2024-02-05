@@ -122,9 +122,9 @@ public:
     template<class T>
     inline call_result_t<T> Read( ptr_t dwAddress )
     {
-        auto res = reinterpret_cast<T*>(_malloca( sizeof( T ) ));
-        auto status = Read( dwAddress, sizeof( T ), res );
-        return call_result_t<T>( *res, status );
+        auto res = std::make_unique<T>();
+        auto status = Read(dwAddress, sizeof(T), res.get());
+        return call_result_t<T>(*res, status);
     };
 
     /// <summary>
