@@ -122,7 +122,7 @@ public:
     template<class T>
     inline call_result_t<T> Read( ptr_t dwAddress )
     {
-        auto res = std::make_unique<T>();
+        auto res = std::unique_ptr<T, decltype(_freea)*>(reinterpret_cast<T*>(_malloca(sizeof(T))), _freea);
         auto status = Read(dwAddress, sizeof(T), res.get());
         return call_result_t<T>(*res, status);
     };
@@ -135,7 +135,7 @@ public:
     template<class T>
     inline call_result_t<T> Read( std::vector<ptr_t>&& adrList )
     {
-        auto res = reinterpret_cast<T*>(_malloca( sizeof( T ) ));
+        auto res = std::unique_ptr<T, decltype(_freea)*>(reinterpret_cast<T*>(_malloca(sizeof(T))), _freea);
         auto status = Read( std::forward<std::vector<ptr_t>>( adrList ), sizeof( T ), res );
         return call_result_t<T>( *res, status );
     }
